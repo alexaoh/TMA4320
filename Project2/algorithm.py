@@ -1,6 +1,7 @@
 import math
 from plotting import *
 from spirals import *
+import pickle
 
 
 def sigma(x):
@@ -94,7 +95,7 @@ def calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k):
         J_der_b[i,:,:] = h*(val @ vec_I)
     return J_der_W, J_der_b
 
-def algorithm(Y_0, c, I, d):
+def algorithm(Y_0, c, I, d, mode="training"):
     K = 15  #antall transformajsoner, kan økes til 15-20
     h = 0.1 #skrittlengde
     iterations = 10000  #kan økes til 40 000
@@ -105,7 +106,12 @@ def algorithm(Y_0, c, I, d):
     b_k_dim = np.zeros((K,d,I))
 
     #Learning parameters (set random startvalues)
-    W_k, b_k, omega, my = set_random_parameters(K, d)
+    if mode == "training":
+        W_k, b_k, omega, my = set_random_parameters(K, d)
+    elif mode == "testing":
+        with open("parameters.txt", "rb") as f:
+            U = pickle.load(f)
+        W_k, b_k, omega, my = U[0], U[1], U[2], U[3]
 
     j = 1   #Må starte på 1
     J = np.zeros(iterations)
@@ -134,22 +140,24 @@ def algorithm(Y_0, c, I, d):
         
         J_der_W, J_der_b = calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k)
         
-        my, m_j[0],v_j[0] = update_parameters(my, J_der_my, m_j[0], v_j[0], tau, j)
-        omega, m_j[1],v_j[1] = update_parameters(omega,J_der_omega,m_j[1],v_j[1], tau, j)
-        b_k, m_j[2],v_j[2] = update_parameters(b_k,J_der_b,m_j[2],v_j[2], tau, j)
-        W_k, m_j[3],v_j[3] = update_parameters(W_k,J_der_W,m_j[3],v_j[3], tau, j) 
+        if mode == "training":
+            my, m_j[0],v_j[0] = update_parameters(my, J_der_my, m_j[0], v_j[0], tau, j)
+            omega, m_j[1],v_j[1] = update_parameters(omega,J_der_omega,m_j[1],v_j[1], tau, j)
+            b_k, m_j[2],v_j[2] = update_parameters(b_k,J_der_b,m_j[2],v_j[2], tau, j)
+            W_k, m_j[3],v_j[3] = update_parameters(W_k,J_der_W,m_j[3],v_j[3], tau, j) 
 
-        ''' #Vanilla blir bedre med større skrittlengde synes jeg! Men Adam virker fortsatt litt bedre!
-        my = update_parameters(my, J_der_my, m_j[0], v_j[0], tau, j, "Plain")
-        omega = update_parameters(omega, J_der_omega,  m_j[0], v_j[0], tau, j, "Plain")
-        b_k = update_parameters(b_k,J_der_b,  m_j[0], v_j[0], tau, j, "Plain")
-        W_k = update_parameters(W_k, J_der_W,  m_j[0], v_j[0], tau, j, "Plain")
-        '''
+            ''' #Vanilla blir bedre med større skrittlengde synes jeg! Men Adam virker fortsatt litt bedre!
+            my = update_parameters(my, J_der_my, m_j[0], v_j[0], tau, j, "Plain")
+            omega = update_parameters(omega, J_der_omega,  m_j[0], v_j[0], tau, j, "Plain")
+            b_k = update_parameters(b_k,J_der_b,  m_j[0], v_j[0], tau, j, "Plain")
+            W_k = update_parameters(W_k, J_der_W,  m_j[0], v_j[0], tau, j, "Plain")
+            '''
         j+= 1
     
-    #Lagre parameterne til disk! Se krav til rapport. 
-    #De bør enkelt kunne lagres til disk og leses inn senere når man vil validere, teste og vise resultater. 
-    #Hvordan kan dette løses på best mulig måte?
+    if mode == "training":
+        U = [W_k, b_k, omega, my]
+        with open("parameters.txt", "wb") as f:
+            pickle.dump(U, f)
     return Y_Kk, J, omega, my, iterations
 
 def last_function(grid, omega, my): #Used to plot_separation
