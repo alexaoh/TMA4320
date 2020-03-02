@@ -122,7 +122,6 @@ def algorithm(Y_0, c, I, d, mode="training"):
 
     #Til Plain vanilla:
     tau = 0.01
-
     while j <= iterations:
        
         Y_Kk = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k) #LAGRE I MINNET! SKAL KANSKJE SKRIVES TIL FIL?
@@ -158,7 +157,7 @@ def algorithm(Y_0, c, I, d, mode="training"):
         U = [W_k, b_k, omega, my]
         with open("parameters.txt", "wb") as f:
             pickle.dump(U, f)
-    return Y_Kk, J, omega, my, iterations
+    return Y_Kk, J, omega, my, iterations, Z
 
 def last_function(grid, omega, my): #Used to plot_separation
     ''' A function that takes one argument, and S-by-2 matrix of S intermediate states in
