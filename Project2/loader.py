@@ -1,3 +1,5 @@
+''' Code supplied by the teaching staff ''' 
+
 import os
 import struct
 from array import array as pyarray

@@ -16,5 +16,3 @@ plot_progression(Y_Kk, c)
 
 r = 1000 #resolution of plot
 plot_separation(last_function, Y_Kk[-1,:,:], c, r, omega, my)
-
-

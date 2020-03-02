@@ -119,7 +119,7 @@ def algorithm(Y_0, c, I, d):
 
     while j <= iterations:
        
-        Y_Kk = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k)
+        Y_Kk = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k) #LAGRE I MINNET! SKAL KANSKJE SKRIVES TIL FIL?
 
         #Calculates Z, Y_k-transpose and cost function J
         YT_k = np.transpose(Y_Kk[-1,:,:]) #Enklere notasjon
@@ -146,6 +146,10 @@ def algorithm(Y_0, c, I, d):
         W_k = update_parameters(W_k, J_der_W,  m_j[0], v_j[0], tau, j, "Plain")
         '''
         j+= 1
+    
+    #Lagre parameterne til disk! Se krav til rapport. 
+    #De bør enkelt kunne lagres til disk og leses inn senere når man vil validere, teste og vise resultater. 
+    #Hvordan kan dette løses på best mulig måte?
     return Y_Kk, J, omega, my, iterations
 
 def last_function(grid, omega, my): #Used to plot_separation

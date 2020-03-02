@@ -1,3 +1,5 @@
+''' Code supplied by the teaching staff ''' 
+
 import math
 import numpy as np
 

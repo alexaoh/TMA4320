@@ -1,3 +1,5 @@
+''' Code supplied by the teaching staff ''' 
+
 '''
 This module contains three functions that can plot some aspects of the simple 2d-points-in-a-spiral problem.
 The functions can be used as is, without looking into their inner workings.
