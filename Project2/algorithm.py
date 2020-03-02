@@ -168,3 +168,11 @@ def plot_cost_function_convergence(iterations, J):
     plt.ylabel("Cost")
     plt.title("Convergence of cost function")
     plt.show()
+
+def stochastic_gradient_descent(I, Y_0, chunk=50): #Denne må implementeres i algoritmen, men jeg skjønner ikke helt hvordan? :(
+    ''' Made to pick out pictures to test. Modifies the Adam Descent Algorithm. ''' 
+    start = np.random.randint(1,I-chunk)
+    print(start)
+    Y0_chunk = Y_0[:,start:start+chunk] #picks out 50 pictures! Important to use in MNIST-task. 
+    return Y0_chunk, chunk
+    
