@@ -7,7 +7,7 @@ I = 12223 #images --> kjører et beskjedent antall blant de 60000, basert på St
 #Blir ca 12000 bilder maksimalt med kun utvalg på to siffer. 
 d = 784 # 28x28
 Y_0, c = get_dataset()
-Y_Kk, J, omega, my, iterations = algorithm(Y_0, c, I, d, "training")
+Y_Kk, J, omega, my, iterations, Z = algorithm(Y_0, c, I, d, "training")
 
 Y0_chunk, chunk = stochastic_gradient_descent(I, Y_0)
 print(Y_0)

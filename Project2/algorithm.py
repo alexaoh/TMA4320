@@ -55,11 +55,9 @@ def update_parameters(x, x_der, m_jn, v_jn, tau, j, method="Adam"):
 
 def calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k):
     for i in range(K):
-        b_k_dim[i,:,:] = b_k[i,:,:]   #Lager I kolonner med b_k[i,:,:] for å kunne plusse sammen med en dxI matrise
-        #ER LINJEN OVER NØDVENDIG? SKJØNNER IKKE HELT HVORFOR DET ER EN B_K_DIM I TILLEGG TIL B_K?
-        #KUNNE MAN IKKE BARE PLUUSET PÅ B_K I LINJEN YNDER, I STEDET FOR Å BRUKE B_K_DIM?
-        Y_Kk[i+1,:,:] = Y_Kk[i,:,:] + h*sigma(W_k[i,:,:] @ Y_Kk[i,:,:] + b_k_dim[i,:,:])  #plusser b_k med alle kolonnene i Y_Kk
-    return Y_Kk
+        b_k_dim[i,:,:] = b_k[i,:,:]   
+        Y_Kk[i+1,:,:] = Y_Kk[i,:,:] + h*sigma(W_k[i,:,:] @ Y_Kk[i,:,:] + b_k_dim[i,:,:]) 
+    return Y_Kk, b_k_dim
 
 def calculate_P_k(omega, Z, c, eta_der, YT_k, my):
     ''' Calculates part (7) of gradient '''
@@ -96,9 +94,9 @@ def calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k):
     return J_der_W, J_der_b
 
 def algorithm(Y_0, c, I, d, mode="training"):
-    K = 15  #antall transformajsoner, kan økes til 15-20
+    K = 20  #antall transformajsoner, kan økes til 15-20
     h = 0.1 #skrittlengde   
-    iterations = 10000  #kan økes til 40 000
+    iterations = 40000  #kan økes til 40 000
 
     #Forberedelser:
     Y_Kk = np.zeros((K+1,d,I))  #Med K transformasjoner får vi K+1 Y_k'er
@@ -124,7 +122,7 @@ def algorithm(Y_0, c, I, d, mode="training"):
     tau = 0.01
     while j <= iterations:
        
-        Y_Kk = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k) #LAGRE I MINNET! SKAL KANSKJE SKRIVES TIL FIL?
+        Y_Kk, b_k_dim = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k) #LAGRE I MINNET! SKAL KANSKJE SKRIVES TIL FIL?
 
         #Calculates Z, Y_k-transpose and cost function J
         YT_k = np.transpose(Y_Kk[-1,:,:]) #Enklere notasjon
@@ -201,4 +199,4 @@ def print_successrate(Z,c, tol=0.05): #Small tolerance
         if abs(Z[i]-c[i]) <= tol:
             correctly_classified+=1
     
-    print("Ratio of correctly classified points:", correctly_classified/len(c))
+    print("Ratio of correctly classified points:", correctly_classified/len(c),"(with tolerated difference between classification point and label:",str(tol)+")")
