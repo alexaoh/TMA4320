@@ -97,7 +97,7 @@ def calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k):
 
 def algorithm(Y_0, c, I, d, mode="training"):
     K = 15  #antall transformajsoner, kan økes til 15-20
-    h = 0.1 #skrittlengde
+    h = 0.3 #skrittlengde
     iterations = 10000  #kan økes til 40 000
 
     #Forberedelser:
@@ -195,16 +195,10 @@ def stochastic_gradient_descent(I, Y_0, chunk=50): #Denne må implementeres i al
     Y0_chunk = Y_0[:,start:start+chunk] #picks out 50 pictures! Important to use in MNIST-task. 
     return Y0_chunk, chunk
     
-def print_successrate(Z,c):
+def print_successrate(Z,c, tol=0.5):
     correctly_classified = 0
     for i in range(len(Z)):
-        if Z[i] >= 0.5:
-            Z[i] = True
-            if Z[i] == c[i]:
-                correctly_classified+=1
-        else: 
-            Z[i] = False
-            if Z[i] == c[i]:
-                correctly_classified+=1
+        if abs(Z[i]-c[i]) <= tol:
+            correctly_classified+=1
     
     print("Ratio of correctly classified points:", correctly_classified/len(c))
