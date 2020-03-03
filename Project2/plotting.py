@@ -20,7 +20,7 @@ def plot_progression(Y, C):
     for k in range(Y.shape[0]):
         show_dots(Y[k,:,:],C)
         plt.show(block = False) #Alexander: Added this stuff to make plotting a bit nicer in a refular TextEditor. 
-        plt.pause(1)
+        plt.pause(0.5)
         plt.clf()
 
 
