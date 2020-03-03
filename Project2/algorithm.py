@@ -166,6 +166,19 @@ def last_function(grid, omega, my): #Used to plot_separation
     Z = eta(np.transpose(grid) @ omega + my) 
     return Z
 
+def forward_function(grid): #Denne kan nok endre til å samsvare med en annen function. (ev kalle den funksjonen inni denne)
+    ''' A function that takes one argument, an S-by-2 matrix of S datapoints, and
+    returns a vector of S classification values.'''
+    b_k_dim = np.zeros((K,d,len(grid[0,:])))
+    for i in range(K): 
+        b_k_dim[i,:,:] = b_k[i,:,:]   
+        grid_k = grid + h*sigma(W_k[i,:,:] @ grid + b_k_dim[i,:,:])
+        grid = grid_k
+
+    grid_Tk = np.transpose(grid_k)
+    Z = eta(grid_Tk @ omega + my)
+    return Z
+
 def plot_cost_function_convergence(iterations, J):
     ''' Plots the convergence of the cost function as a function of the iteration index ''' 
     j_values = [i for i in range(iterations)]
@@ -179,7 +192,19 @@ def plot_cost_function_convergence(iterations, J):
 def stochastic_gradient_descent(I, Y_0, chunk=50): #Denne må implementeres i algoritmen, men jeg skjønner ikke helt hvordan? :(
     ''' Made to pick out pictures to test. Modifies the Adam Descent Algorithm. ''' 
     start = np.random.randint(1,I-chunk)
-    print(start)
     Y0_chunk = Y_0[:,start:start+chunk] #picks out 50 pictures! Important to use in MNIST-task. 
     return Y0_chunk, chunk
     
+def print_successrate(Z,c):
+    correctly_classified = 0
+    for i in range(len(Z)):
+        if Z[i] >= 0.5:
+            Z[i] = True
+            if Z[i] == c[i]:
+                correctly_classified+=1
+        else: 
+            Z[i] = False
+            if Z[i] == c[i]:
+                correctly_classified+=1
+    
+    print("Ratio of correctly classified points:", correctly_classified/len(c))
