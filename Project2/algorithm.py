@@ -94,8 +94,8 @@ def calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k):
     return J_der_W, J_der_b
 
 def algorithm(Y_0, c, I, d, mode="training"):
-    K = 20  #antall transformajsoner, kan økes til 15-20
-    h = 0.1 #skrittlengde   
+    K = 10  #antall transformajsoner, kan økes til 15-20
+    h = 0.9 #skrittlengde   
     iterations = 40000  #kan økes til 40 000
 
     #Forberedelser:
@@ -103,41 +103,49 @@ def algorithm(Y_0, c, I, d, mode="training"):
     Y_Kk[0,:,:] = Y_0
     b_k_dim = np.zeros((K,d,I))
 
+    J = np.zeros(iterations)
     #Learning parameters (set random startvalues)
-    if mode == "training":
-        W_k, b_k, omega, my = set_random_parameters(K, d)
-    elif mode == "testing":
-        with open("parameters.txt", "rb") as f:
+    if mode == "testing":
+        with open("20K1000B40KIh09.txt", "rb") as f:
             U = pickle.load(f)
         W_k, b_k, omega, my = U[0], U[1], U[2], U[3]
 
-    j = 1   #Må starte på 1
-    J = np.zeros(iterations)
-
-    #Til Adam-metoden:
-    v_j = np.array([0,np.zeros(d),np.zeros((K,d,1)),np.zeros((K,d,d))])
-    m_j = np.array([0,np.zeros(d),np.zeros((K,d,1)),np.zeros((K,d,d))])
-
-    #Til Plain vanilla:
-    tau = 0.01
-    while j <= iterations:
-       
-        Y_Kk, b_k_dim = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k) #LAGRE I MINNET! SKAL KANSKJE SKRIVES TIL FIL?
-
+        Y_Kk, b_k_dim = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k)
         #Calculates Z, Y_k-transpose and cost function J
         YT_k = np.transpose(Y_Kk[-1,:,:]) #Enklere notasjon
         Z = eta(YT_k @ omega + my)  #Z er en Ix1 vektor
-        J[j-1] = 0.5*np.linalg.norm(Z-c)**2 #J blir en array med iterations antall verdier
+
+
+    elif mode == "training":
+        j = 1   #Må starte på 1
+
+        #Til Adam-metoden:
+        v_j = np.array([0,np.zeros(d),np.zeros((K,d,1)),np.zeros((K,d,d))])
+        m_j = np.array([0,np.zeros(d),np.zeros((K,d,1)),np.zeros((K,d,d))])
+
+        #Til Plain vanilla:
+        tau = 0.01
+
+        W_k, b_k, omega, my = set_random_parameters(K, d)
+
+        while j <= iterations:
         
-        P_k = calculate_P_k(omega, Z, c, eta_der, YT_k, my) #LAGRE I MINNET! SKAL KANSKJE SKRIVES TIL FIL?
-        
-        J_der_my, J_der_omega = calculate_projection_derivatives(eta_der, YT_k, omega, Z, c, Y_Kk, my)
-        
-        P_Kk = calculate_PKk(K, d, I, P_k, h, W_k, b_k_dim, Y_Kk)
-        
-        J_der_W, J_der_b = calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k)
-        
-        if mode == "training":
+            Y_Kk, b_k_dim = calculate_YKk(Y_Kk, b_k_dim, b_k, K, h, sigma, W_k)
+
+            #Calculates Z, Y_k-transpose and cost function J
+            YT_k = np.transpose(Y_Kk[-1,:,:]) #Enklere notasjon
+            Z = eta(YT_k @ omega + my)  #Z er en Ix1 vektor
+
+            J[j-1] = 0.5*np.linalg.norm(Z-c)**2 #J blir en array med iterations antall verdier
+            
+            P_k = calculate_P_k(omega, Z, c, eta_der, YT_k, my)
+            
+            J_der_my, J_der_omega = calculate_projection_derivatives(eta_der, YT_k, omega, Z, c, Y_Kk, my)
+            
+            P_Kk = calculate_PKk(K, d, I, P_k, h, W_k, b_k_dim, Y_Kk)
+            
+            J_der_W, J_der_b = calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k)
+            
             my, m_j[0],v_j[0] = update_parameters(my, J_der_my, m_j[0], v_j[0], tau, j)
             omega, m_j[1],v_j[1] = update_parameters(omega,J_der_omega,m_j[1],v_j[1], tau, j)
             b_k, m_j[2],v_j[2] = update_parameters(b_k,J_der_b,m_j[2],v_j[2], tau, j)
@@ -149,12 +157,13 @@ def algorithm(Y_0, c, I, d, mode="training"):
             b_k = update_parameters(b_k,J_der_b,  m_j[0], v_j[0], tau, j, "Plain")
             W_k = update_parameters(W_k, J_der_W,  m_j[0], v_j[0], tau, j, "Plain")
             '''
-        j+= 1
-    
-    if mode == "training":
+            j+= 1
+        
         U = [W_k, b_k, omega, my]
         with open("parameters.txt", "wb") as f:
             pickle.dump(U, f)
+        
+
     return Y_Kk, J, omega, my, iterations, Z
 
 def last_function(grid, omega, my): #Used to plot_separation

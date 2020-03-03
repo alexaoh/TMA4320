@@ -6,7 +6,7 @@ d = 2 #dimension
 
 Y_0, c = get_data_spiral_2d(I) #Til oppgave 1: 
 c = c[:,0]  #for å få en Ix1 vektor 
-Y_Kk, J, omega, my, iterations, Z = algorithm(Y_0, c, I, d, "training")
+Y_Kk, J, omega, my, iterations, Z = algorithm(Y_0, c, I, d, "testing")
 
 #Testing er feil sånn som jeg har det nå! Skal bare regne ut Z en gang!
 
