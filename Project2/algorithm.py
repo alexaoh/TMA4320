@@ -94,8 +94,8 @@ def calculate_rest_of_gradient(K, d, I, P_Kk, sigma_der, Y_Kk, b_k_dim, h, W_k):
     return J_der_W, J_der_b
 
 def algorithm(Y_0, c, I, d, mode="training"):
-    K = 15  #antall transformajsoner, kan økes til 15-20
-    h = 0.1 #skrittlengde   
+    K = 7  #antall transformajsoner, kan økes til 15-20
+    h = 0.9 #skrittlengde   
     iterations = 40000  #kan økes til 40 000
 
     #Forberedelser:
@@ -106,7 +106,7 @@ def algorithm(Y_0, c, I, d, mode="training"):
     J = np.zeros(iterations)
     #Learning parameters (set random startvalues)
     if mode == "testing":
-        with open("15K1000B40KIh01.txt", "rb") as f:
+        with open("7K1000B40KIh09.txt", "rb") as f:
             U = pickle.load(f)
         W_k, b_k, omega, my = U[0], U[1], U[2], U[3]
 
