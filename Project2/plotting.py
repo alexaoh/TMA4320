@@ -48,7 +48,7 @@ def plot_model(forward_function, Ys, C, n):
     plot_contours(*coordinates, Z, l, Ys, C)
 
 
-def plot_separation(last_function, Ys, C, n, omega, my):
+def plot_separation(last_function, Ys, C, n):
     '''
     Show how the training data is represented in the last layer. Also maps the rest of the possible points in the plane.
     
