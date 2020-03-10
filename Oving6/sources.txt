@@ -1,0 +1,5 @@
+Sources to read more about module 5: Numerical Solution of ODE
+
+4N: https://www.math.ntnu.no/emner/TMA4135/2018h/numerics/ODE.pdf
+https://math.berkeley.edu/~mgu/MA128ASpring2017/MA128ALectureWeek9.pdf
+https://www.researchgate.net/publication/302469427_One-Step_Methods_Order_Convergence
