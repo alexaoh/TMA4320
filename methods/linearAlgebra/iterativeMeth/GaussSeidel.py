@@ -41,7 +41,7 @@ def Gauss_seidel(A, b, u0, tol, maxiter):
         k += 1   
         x = -U@u0+b
 
-        #u = dividend_inv@(((1-omega)*D@u0)-(omega*(U@u0))+omega*b)
+        #u = dividend_inv@(U@u0+b)
 
         #In case using numpy to find inverse is considered "cheating", I solved it wiht forward_substitution instead/also
         u = forward_subs(dividend,x)
