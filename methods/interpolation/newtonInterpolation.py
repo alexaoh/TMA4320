@@ -17,11 +17,8 @@ def N_divided_differences(xdata, ydata):
     assert(n == m)
     f = np.zeros((n, n+1)) #Make table for the differences. 
 
-    for i in range(n): 
-        f[i,1] = ydata[i]
-    
-    for i in range(n): #Add x-values to first column for calculation purposes. 
-        f[i, 0] = xdata[i]
+    f[:,1] = ydata
+    f[:,0] = xdata #Add x-values to first column for calculation purposes. Follow same pattern as by hand. 
 
     for col in range(2,n+1):
         for row in range(n+1-col):
@@ -42,12 +39,11 @@ def newton_polynomial(xdata, ydata, x):
     top_row = N_divided_differences(xdata, ydata)
     n = len(ydata)
     pol = top_row[0]
-    for i in range(1,n):
-        factor = 1
-        for j in range(i): #Prøv å få til matrisemultiplikasjon @ for å unngå denne løkka!
-            factor *= (x-xdata[j])
-        pol += top_row[i]*factor
-
+    
+    factor = 1
+    for i in range(n-1):
+        factor *= (x-xdata[i])
+        pol += top_row[i+1]*factor
     return pol
 
 #Test, example from notes, compared to the polynonial f found by Newton's divided differences calculated by hand.
@@ -60,6 +56,13 @@ ydata = np.array([-1,-1,5])
 x = np.linspace(-2,4,50)
 
 pol= newton_polynomial(xdata, ydata, x)
+
+
+#Tested changing plotting parameters. 
+newparams = {'figure.figsize': (8.0, 4.0), 'axes.grid': True,
+             'lines.markersize': 8, 'lines.linewidth': 2,
+             'font.size': 14}
+plt.rcParams.update(newparams)
 
 plt.plot(x, pol, 'k', label="Newton")
 plt.plot(x, f(x), '--' ,c="white", label="Notes")
