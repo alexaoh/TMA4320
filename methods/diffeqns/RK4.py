@@ -8,7 +8,7 @@ def kutta4_step(f, t, y, h):
     return y + (h/6)*(f1+2*f2+2*f3+f4)
     
 
-def Kutta4(f,t0,y0,h,nsteps):
+def kutta4(f,t0,y0,h,nsteps):
     m = len(y0)
     Y = np.zeros((nsteps+1,m))
     T = np.zeros(nsteps+1)

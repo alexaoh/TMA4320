@@ -16,6 +16,7 @@ def adaptive_quadrature(f, a, b, tol):
     Output: 
     Numerical approximation to the integral
     '''
+    #Have not gotten this to work as planned. 
     n = 1
     f_call_counter = 0
 
@@ -53,7 +54,42 @@ def adaptive_quadrature(f, a, b, tol):
     return result, f_call_counter
 
 #Test
-result, counter = adaptive_quadrature(lambda x : np.sin(x**2), 0, 5, 1.0e-7)
-print(counter)
+#result, counter = adaptive_quadrature(lambda x : np.sin(x**2), 0, 5, 1.0e-7)
+#print(counter)
 
 #Recursive implementation of the adaptive quadrature with the trapezoid method
+
+def recursive_adaptive_quadrature(f, a, b, tol, old_approx):
+    ''' 
+    Input: 
+    f: Function to integrate
+    a: Beginning point
+    b: End point
+    tol: Tolerance of error in approximation in the interval. 
+    old_approximation: Used to calculate the approximation to the correct tolerance level.  
+
+    Output: 
+    Numerical approximation to the integral
+    '''
+    c = (a+b)/2
+    Sac = trapezoid_step(a, c, f)
+    Scb = trapezoid_step(c, b, f)
+    global function_calls #Used to count number of function calls (easiest, but not great solution). 
+    function_calls += 4
+    new_approx = Sac + Scb
+    if np.abs(new_approx-old_approx) < 3*tol:
+        return new_approx
+    else: 
+        tol /= 2
+        return recursive_adaptive_quadrature(f, a, c, tol, Sac) +\
+               recursive_adaptive_quadrature(f, c, b, tol, Scb)
+
+#Test recursive_adaptive_quadrature. 
+a = 0
+b = 1
+tol = 1.0e-8
+function_calls = 2
+old_approximation = trapezoid_step(a, b, lambda x : np.exp(x)/np.cos(x))
+approximation = recursive_adaptive_quadrature(lambda x : np.exp(x)/np.cos(x), a, b, tol, old_approximation)
+print(approximation)
+print(function_calls)
