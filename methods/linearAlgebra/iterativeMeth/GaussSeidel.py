@@ -10,7 +10,7 @@ def forward_subs(LU,b):
         LU inneholder både L og U, selv om kun L trengs i denne rutinen
         b Vektor med høyresiden i problemet som skal løses
     Output:
-        u Løsningen av det lineære nedretriangulære systemet Lc=b
+        u Løsningen av det lineære nedretriangulære systemet LUu=b
     '''
     n, m = LU.shape
     u = np.zeros(n)
