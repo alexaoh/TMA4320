@@ -1,5 +1,5 @@
 #Heun's method used to take step, Eulers method used to calculate est in step size control
-#(adaptive step size). Therefore a so-called embedded pair of Heun's and Euler's methods. 
+#(adaptive step size). Therefore a so-called embedded pair of Heun's and Euler's methods 2(1).
 
 import numpy as np
 import matplotlib.pyplot as plt

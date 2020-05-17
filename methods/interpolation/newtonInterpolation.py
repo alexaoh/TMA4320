@@ -24,6 +24,7 @@ def N_divided_differences(xdata, ydata):
         for row in range(n+1-col):
             f[row,col] = (f[row+1,col-1]-f[row,col-1])/(f[row+col-1, 0]-f[row, 0])
 
+    print("Table of divided differences:",f, sep="\n")
     return f[0,1:] #No need to return the entire matrix, only returning top row. 
 
 def newton_polynomial(xdata, ydata, x):
