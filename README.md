@@ -2,4 +2,4 @@
 
 ### https://www.ntnu.edu/studies/courses/TMA4320#tab=omEmnet
 
-##### (Kok på eget ansvar)
+##### Made exclusively for personal use. 
