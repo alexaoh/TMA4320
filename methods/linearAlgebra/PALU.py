@@ -2,7 +2,7 @@ import numpy as np
 import forwardBackwardSubs as subs
 
 def mylu(A):
-    ''' Returns: 
+    '''Returns: 
     Vector P interpreted as a Pivot matrix (represents a matrix with unit vectors e_Pk in row k).
     LU is a copy of A, where the diagonal and above is U and below the diagonal is L. 
     '''
@@ -10,7 +10,7 @@ def mylu(A):
     n = A.shape[0]
     P = np.arange(n)
     for k in range(n-1):
-        pivot = np.argmax(abs(A[P[k:], k]))+k
+        pivot = np.argmax(abs(LU[P[k:], k]))+k
         P[pivot], P[k] = P[k], P[pivot]
         mults = LU[P[k+1:],k] / LU[P[k],k]
         LU[P[k+1:], k+1:] = LU[P[k+1:], k+1:] - np.outer(mults, LU[P[k],k+1:])
@@ -36,13 +36,13 @@ b=np.array([0.9876,-1.231,0.0987,-0.5544,0.7712])
 LU2, P2 = mylu(A2)
 
 c = subs.forward_subs(LU2, P2, b)
-print(c)
+#print(c)
 x = subs.backward_subs(LU2, P2, c)
-print(x)
+#print(x)
 
 #Verify that the solution works with this solution from Numpy
 
 import numpy.linalg as lg
 x2 = lg.solve(A2,b)
-print(x2)
+#print(x2)
 #Great!
